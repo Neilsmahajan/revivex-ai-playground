@@ -10,5 +10,9 @@ export default defineSchema({
     userPrompt: v.string(),
     output: v.string(),
     createdAt: v.number(),
+    promptTokens: v.optional(v.number()),
+    completionTokens: v.optional(v.number()),
+    totalTokens: v.optional(v.number()),
+    cost: v.optional(v.number()),
   }).index("by_user", ["userId"]),
 });

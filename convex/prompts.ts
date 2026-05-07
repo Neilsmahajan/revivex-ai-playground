@@ -9,6 +9,10 @@ export const save = mutation({
     model: v.string(),
     userPrompt: v.string(),
     output: v.string(),
+    promptTokens: v.optional(v.number()),
+    completionTokens: v.optional(v.number()),
+    totalTokens: v.optional(v.number()),
+    cost: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("prompts", {

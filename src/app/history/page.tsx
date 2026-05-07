@@ -122,6 +122,16 @@ export default function HistoryPage() {
                           },
                         )}
                       </span>
+                      {prompt.cost !== undefined && (
+                        <span className="inline-flex items-center rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
+                          ${prompt.cost.toFixed(6)}
+                        </span>
+                      )}
+                      {prompt.totalTokens !== undefined && (
+                        <span className="text-xs text-zinc-600">
+                          {prompt.totalTokens.toLocaleString()} tokens
+                        </span>
+                      )}
                     </div>
                   </div>
                   <svg
@@ -182,6 +192,39 @@ export default function HistoryPage() {
                       {prompt.output}
                     </pre>
                   </div>
+
+                  {(prompt.promptTokens !== undefined ||
+                    prompt.completionTokens !== undefined ||
+                    prompt.cost !== undefined) && (
+                    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-800/30 px-3 py-2">
+                      <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider mr-1">
+                        Usage
+                      </span>
+                      {prompt.promptTokens !== undefined && (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
+                          <span className="text-zinc-500">In</span>
+                          {prompt.promptTokens.toLocaleString()}
+                        </span>
+                      )}
+                      {prompt.completionTokens !== undefined && (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
+                          <span className="text-zinc-500">Out</span>
+                          {prompt.completionTokens.toLocaleString()}
+                        </span>
+                      )}
+                      {prompt.totalTokens !== undefined && (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
+                          <span className="text-zinc-500">Total</span>
+                          {prompt.totalTokens.toLocaleString()} tokens
+                        </span>
+                      )}
+                      {prompt.cost !== undefined && (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400">
+                          ${prompt.cost.toFixed(6)}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex items-center gap-2 pt-2">
                     <button

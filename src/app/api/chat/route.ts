@@ -62,7 +62,8 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     const content = data?.choices?.[0]?.message?.content ?? "";
-    return Response.json({ content });
+    const usage = data?.usage ?? null;
+    return Response.json({ content, usage });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
