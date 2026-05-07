@@ -17,59 +17,79 @@ export default function HistoryPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="flex flex-1 items-center justify-center px-4">
-        <p className="text-zinc-400">Sign in to view your prompt history.</p>
+      <div
+        className="flex flex-1 items-center justify-center px-4"
+        style={{ minHeight: "calc(100vh - 57px)" }}
+      >
+        <p className="text-[13px]" style={{ color: "var(--text-secondary)" }}>
+          Sign in to view your prompt history.
+        </p>
       </div>
     );
   }
 
   if (prompts === undefined) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <svg
-          className="h-8 w-8 animate-spin text-zinc-500"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
+      <div
+        className="flex flex-1 items-center justify-center"
+        style={{ minHeight: "calc(100vh - 57px)" }}
+      >
+        <div className="relative">
+          <div
+            className="h-10 w-10 rounded-full"
+            style={{ border: "2px solid var(--border-subtle)" }}
           />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          <div
+            className="absolute inset-0 h-10 w-10 rounded-full animate-spin"
+            style={{
+              border: "2px solid transparent",
+              borderTopColor: "var(--accent)",
+            }}
           />
-        </svg>
+        </div>
       </div>
     );
   }
 
   if (prompts.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center px-4">
-        <div className="text-center">
-          <svg
-            className="mx-auto mb-4 h-16 w-16 text-zinc-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1}
-            stroke="currentColor"
+      <div
+        className="flex flex-1 items-center justify-center px-4"
+        style={{ minHeight: "calc(100vh - 57px)" }}
+      >
+        <div className="text-center animate-fade-in">
+          <div
+            className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-xl"
+            style={{
+              background: "var(--bg-elevated)",
+              border: "1px solid var(--border-subtle)",
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-            />
-          </svg>
-          <h2 className="text-lg font-semibold text-zinc-300">
+            <svg
+              className="h-7 w-7"
+              style={{ color: "var(--text-muted)" }}
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+              />
+            </svg>
+          </div>
+          <h2
+            className="text-base font-semibold"
+            style={{ color: "var(--text-primary)" }}
+          >
             No history yet
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p
+            className="mt-1.5 text-[13px]"
+            style={{ color: "var(--text-muted)" }}
+          >
             Run some prompts in the playground to see them here.
           </p>
         </div>
@@ -78,39 +98,65 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="mx-auto w-full max-w-5xl px-5 py-8 sm:px-8">
+      <div className="mb-7 flex items-end justify-between animate-fade-in">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Prompt History</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1
+            className="heading-serif text-3xl"
+            style={{ color: "var(--text-primary)" }}
+          >
+            History
+          </h1>
+          <p
+            className="mt-1.5 text-[13px]"
+            style={{ color: "var(--text-muted)" }}
+          >
             {prompts.length} prompt{prompts.length !== 1 ? "s" : ""} saved
           </p>
         </div>
       </div>
 
-      <div className="space-y-3">
-        {prompts.map((prompt) => {
+      <div className="space-y-2.5">
+        {prompts.map((prompt, index) => {
           const isExpanded = expandedId === prompt._id;
           return (
             <div
               key={prompt._id}
-              className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition-colors hover:border-zinc-700"
+              className="rounded-lg overflow-hidden card-hover"
+              style={{
+                background: "var(--bg-surface)",
+                border: `1px solid ${isExpanded ? "var(--border-strong)" : "var(--border-subtle)"}`,
+                animationDelay: `${index * 0.05}s`,
+              }}
             >
-              {/* Header - always visible */}
+              {/* Header */}
               <button
                 onClick={() => setExpandedId(isExpanded ? null : prompt._id)}
-                className="w-full px-5 py-4 text-left cursor-pointer"
+                className="w-full px-5 py-3.5 text-left cursor-pointer"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-zinc-200 truncate">
+                    <p
+                      className="text-[13px] font-medium truncate"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {prompt.userPrompt}
                     </p>
                     <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center rounded-md bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-400">
+                      <span
+                        className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium"
+                        style={{
+                          background: "var(--accent-muted)",
+                          border: "1px solid var(--accent-border)",
+                          color: "var(--accent)",
+                        }}
+                      >
                         {prompt.model}
                       </span>
-                      <span className="text-xs text-zinc-600">
+                      <span
+                        className="text-[11px]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {new Date(prompt.createdAt).toLocaleDateString(
                           "en-US",
                           {
@@ -123,19 +169,30 @@ export default function HistoryPage() {
                         )}
                       </span>
                       {prompt.cost !== undefined && (
-                        <span className="inline-flex items-center rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
+                        <span
+                          className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium"
+                          style={{
+                            background: "var(--teal-muted)",
+                            border: "1px solid var(--teal-border)",
+                            color: "var(--teal)",
+                          }}
+                        >
                           ${prompt.cost.toFixed(6)}
                         </span>
                       )}
                       {prompt.totalTokens !== undefined && (
-                        <span className="text-xs text-zinc-600">
+                        <span
+                          className="text-[11px]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {prompt.totalTokens.toLocaleString()} tokens
                         </span>
                       )}
                     </div>
                   </div>
                   <svg
-                    className={`h-5 w-5 shrink-0 text-zinc-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                    className={`h-4 w-4 shrink-0 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                    style={{ color: "var(--text-muted)" }}
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
@@ -152,13 +209,26 @@ export default function HistoryPage() {
 
               {/* Expanded content */}
               {isExpanded && (
-                <div className="border-t border-zinc-800 px-5 py-4 space-y-4">
+                <div
+                  className="px-5 py-4 space-y-4"
+                  style={{ borderTop: "1px solid var(--border-subtle)" }}
+                >
                   {prompt.systemPrompt && (
                     <div>
-                      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                      <h3
+                        className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.15em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         System Prompt
                       </h3>
-                      <pre className="whitespace-pre-wrap rounded-lg bg-zinc-800/50 border border-zinc-700/50 p-3 text-sm text-zinc-300 font-mono">
+                      <pre
+                        className="whitespace-pre-wrap rounded-md p-3 text-[13px] font-mono"
+                        style={{
+                          background: "var(--bg-elevated)",
+                          border: "1px solid var(--border-subtle)",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {prompt.systemPrompt}
                       </pre>
                     </div>
@@ -166,29 +236,59 @@ export default function HistoryPage() {
 
                   {prompt.context && (
                     <div>
-                      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                      <h3
+                        className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.15em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Context
                       </h3>
-                      <pre className="whitespace-pre-wrap rounded-lg bg-zinc-800/50 border border-zinc-700/50 p-3 text-sm text-zinc-300 font-mono max-h-48 overflow-auto">
+                      <pre
+                        className="whitespace-pre-wrap rounded-md p-3 text-[13px] font-mono max-h-48 overflow-auto"
+                        style={{
+                          background: "var(--bg-elevated)",
+                          border: "1px solid var(--border-subtle)",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {prompt.context}
                       </pre>
                     </div>
                   )}
 
                   <div>
-                    <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    <h3
+                      className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.15em]"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Prompt
                     </h3>
-                    <pre className="whitespace-pre-wrap rounded-lg bg-zinc-800/50 border border-zinc-700/50 p-3 text-sm text-zinc-300 font-mono">
+                    <pre
+                      className="whitespace-pre-wrap rounded-md p-3 text-[13px] font-mono"
+                      style={{
+                        background: "var(--bg-elevated)",
+                        border: "1px solid var(--border-subtle)",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
                       {prompt.userPrompt}
                     </pre>
                   </div>
 
                   <div>
-                    <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    <h3
+                      className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.15em]"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Output
                     </h3>
-                    <pre className="whitespace-pre-wrap rounded-lg bg-zinc-800/50 border border-zinc-700/50 p-3 text-sm text-zinc-200 font-mono max-h-96 overflow-auto">
+                    <pre
+                      className="whitespace-pre-wrap rounded-md p-3 text-[13px] font-mono max-h-96 overflow-auto"
+                      style={{
+                        background: "var(--bg-elevated)",
+                        border: "1px solid var(--border-subtle)",
+                        color: "var(--text-primary)",
+                      }}
+                    >
                       {prompt.output}
                     </pre>
                   </div>
@@ -196,45 +296,90 @@ export default function HistoryPage() {
                   {(prompt.promptTokens !== undefined ||
                     prompt.completionTokens !== undefined ||
                     prompt.cost !== undefined) && (
-                    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-800/30 px-3 py-2">
-                      <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider mr-1">
+                    <div
+                      className="flex flex-wrap items-center gap-2 rounded-md px-3 py-2"
+                      style={{
+                        background: "var(--bg-elevated)",
+                        border: "1px solid var(--border-subtle)",
+                      }}
+                    >
+                      <span
+                        className="text-[10px] font-semibold uppercase tracking-[0.15em] mr-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Usage
                       </span>
                       {prompt.promptTokens !== undefined && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
-                          <span className="text-zinc-500">In</span>
+                        <span
+                          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px]"
+                          style={{
+                            background: "var(--bg-overlay)",
+                            border: "1px solid var(--border-subtle)",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          <span style={{ color: "var(--text-muted)" }}>In</span>
                           {prompt.promptTokens.toLocaleString()}
                         </span>
                       )}
                       {prompt.completionTokens !== undefined && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
-                          <span className="text-zinc-500">Out</span>
+                        <span
+                          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px]"
+                          style={{
+                            background: "var(--bg-overlay)",
+                            border: "1px solid var(--border-subtle)",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          <span style={{ color: "var(--text-muted)" }}>
+                            Out
+                          </span>
                           {prompt.completionTokens.toLocaleString()}
                         </span>
                       )}
                       {prompt.totalTokens !== undefined && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
-                          <span className="text-zinc-500">Total</span>
+                        <span
+                          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px]"
+                          style={{
+                            background: "var(--bg-overlay)",
+                            border: "1px solid var(--border-subtle)",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          <span style={{ color: "var(--text-muted)" }}>
+                            Total
+                          </span>
                           {prompt.totalTokens.toLocaleString()} tokens
                         </span>
                       )}
                       {prompt.cost !== undefined && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400">
+                        <span
+                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium"
+                          style={{
+                            background: "var(--teal-muted)",
+                            border: "1px solid var(--teal-border)",
+                            color: "var(--teal)",
+                          }}
+                        >
                           ${prompt.cost.toFixed(6)}
                         </span>
                       )}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 pt-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <button
                       onClick={() =>
                         navigator.clipboard.writeText(prompt.output)
                       }
-                      className="flex items-center gap-1.5 rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200 cursor-pointer"
+                      className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[11px] font-medium cursor-pointer transition-all"
+                      style={{
+                        border: "1px solid var(--border-default)",
+                        color: "var(--text-secondary)",
+                      }}
                     >
                       <svg
-                        className="h-3.5 w-3.5"
+                        className="h-3 w-3"
                         fill="none"
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
@@ -253,10 +398,14 @@ export default function HistoryPage() {
                         await removePrompt({ id: prompt._id as Id<"prompts"> });
                         setExpandedId(null);
                       }}
-                      className="flex items-center gap-1.5 rounded-lg border border-red-500/20 px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-500/10 cursor-pointer"
+                      className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[11px] font-medium cursor-pointer transition-all"
+                      style={{
+                        border: "1px solid var(--red-border)",
+                        color: "var(--red)",
+                      }}
                     >
                       <svg
-                        className="h-3.5 w-3.5"
+                        className="h-3 w-3"
                         fill="none"
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}

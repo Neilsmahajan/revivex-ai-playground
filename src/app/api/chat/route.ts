@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
           "HTTP-Referer": "https://revivex-ai-playground.vercel.app",
-          "X-Title": "ReviveX AI Playground",
+          "X-Title": "AI Playground",
         },
         body: JSON.stringify({
           model,

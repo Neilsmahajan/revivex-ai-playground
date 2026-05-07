@@ -40,19 +40,24 @@ export default function Home() {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  // Load API key from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(API_KEY_STORAGE_KEY);
     if (saved) setApiKey(saved);
   }, []);
 
-  // Save API key to localStorage when changed
   useEffect(() => {
     if (apiKey) {
       localStorage.setItem(API_KEY_STORAGE_KEY, apiKey);
     }
   }, [apiKey]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(output);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSubmit = async () => {
     if (!apiKey.trim()) {
@@ -94,7 +99,6 @@ export default function Home() {
       setOutput(data.content);
       setUsage(data.usage ?? null);
 
-      // Save to Convex if signed in
       if (isSignedIn && user) {
         await savePrompt({
           userId: user.id,
@@ -118,44 +122,93 @@ export default function Home() {
 
   if (!isSignedIn) {
     return (
-      <div className="flex flex-1 items-center justify-center px-4">
-        <div className="text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/20 to-indigo-500/20 border border-violet-500/20">
-            <svg
-              className="h-10 w-10 text-violet-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
+      <div
+        className="flex flex-1 items-center justify-center px-4"
+        style={{ minHeight: "calc(100vh - 57px)" }}
+      >
+        <div className="text-center animate-fade-in">
+          {/* Decorative sparkle cluster */}
+          <div className="relative mx-auto mb-8 h-24 w-24">
+            <div
+              className="absolute inset-0 rounded-2xl"
+              style={{
+                background: "var(--accent-muted)",
+                border: "1px solid var(--accent-border)",
+                transform: "rotate(6deg)",
+              }}
+            />
+            <div
+              className="absolute inset-0 rounded-2xl flex items-center justify-center"
+              style={{
+                background: "var(--bg-surface)",
+                border: "1px solid var(--border-default)",
+              }}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
-              />
-            </svg>
+              <svg
+                className="h-10 w-10"
+                style={{ color: "var(--accent)" }}
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"
+                />
+              </svg>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
+          <h1
+            className="heading-serif text-4xl sm:text-5xl"
+            style={{ color: "var(--text-primary)" }}
+          >
             AI Playground
           </h1>
-          <p className="mt-3 text-lg text-zinc-400 max-w-md">
-            Test different system prompts, contexts, and models. Sign in to get
-            started.
+          <p
+            className="mt-4 text-base max-w-sm mx-auto leading-relaxed"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Test prompts, compare models, and explore outputs.
+            <br />
+            Sign in to get started.
           </p>
         </div>
       </div>
     );
   }
 
+  const inputStyle = {
+    background: "var(--bg-elevated)",
+    border: "1px solid var(--border-subtle)",
+    color: "var(--text-primary)",
+  };
+
+  const labelStyle = { color: "var(--text-secondary)" };
+
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
-      {/* API Key Banner */}
-      <div className="mb-8 rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+    <div className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8">
+      {/* API Key Strip */}
+      <div
+        className="mb-7 rounded-lg p-3.5 animate-fade-in"
+        style={{
+          background: "var(--bg-surface)",
+          border: "1px solid var(--border-subtle)",
+        }}
+      >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 border border-amber-500/20">
+            <div
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
+              style={{
+                background: "var(--accent-muted)",
+                border: "1px solid var(--accent-border)",
+              }}
+            >
               <svg
-                className="h-4 w-4 text-amber-400"
+                className="h-3.5 w-3.5"
+                style={{ color: "var(--accent)" }}
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
@@ -169,39 +222,45 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-medium text-zinc-200">
+              <p
+                className="text-[13px] font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
                 OpenRouter API Key
               </p>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 Get yours at{" "}
                 <a
                   href="https://openrouter.ai/keys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-violet-400 hover:text-violet-300 transition-colors"
+                  className="transition-colors"
+                  style={{ color: "var(--accent)" }}
                 >
                   openrouter.ai/keys
                 </a>
-                {" · Stored locally in your browser"}
+                {" · Stored locally"}
               </p>
             </div>
           </div>
-          <div className="relative flex-1 sm:max-w-sm">
+          <div className="relative flex-1 sm:max-w-xs">
             <input
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="sk-or-v1-..."
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 pr-10 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="w-full rounded-md px-3 py-2 pr-9 text-[13px] placeholder:opacity-30 focus:outline-none input-glow"
+              style={inputStyle}
             />
             <button
               type="button"
               onClick={() => setShowApiKey(!showApiKey)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer transition-colors"
+              style={{ color: "var(--text-muted)" }}
             >
               {showApiKey ? (
                 <svg
-                  className="h-4 w-4"
+                  className="h-3.5 w-3.5"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
@@ -215,7 +274,7 @@ export default function Home() {
                 </svg>
               ) : (
                 <svg
-                  className="h-4 w-4"
+                  className="h-3.5 w-3.5"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
@@ -238,26 +297,40 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         {/* Input Panel */}
-        <div className="flex flex-col gap-5">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400">
+        <div className="flex flex-col gap-5 animate-fade-in-delay-1">
+          {/* Configuration Card */}
+          <div
+            className="rounded-lg p-5"
+            style={{
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+            }}
+          >
+            <h2
+              className="mb-5 text-[11px] font-semibold uppercase tracking-[0.15em]"
+              style={labelStyle}
+            >
               Configuration
             </h2>
 
             {/* Model Selection */}
-            <div className="mb-4">
+            <div className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-zinc-300">
+                <label
+                  className="text-[13px] font-medium"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Model
                 </label>
                 <button
                   type="button"
                   onClick={() => setUseCustomModel(!useCustomModel)}
-                  className="text-xs text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+                  className="text-[11px] font-medium cursor-pointer transition-colors"
+                  style={{ color: "var(--accent)" }}
                 >
-                  {useCustomModel ? "Use preset" : "Use custom"}
+                  {useCustomModel ? "← Use preset" : "Custom model →"}
                 </button>
               </div>
               {useCustomModel ? (
@@ -266,13 +339,15 @@ export default function Home() {
                   value={customModel}
                   onChange={(e) => setCustomModel(e.target.value)}
                   placeholder="e.g. openai/gpt-4o"
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                  className="w-full rounded-md px-3 py-2.5 text-[13px] placeholder:opacity-30 focus:outline-none input-glow"
+                  style={inputStyle}
                 />
               ) : (
                 <select
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2.5 text-sm text-zinc-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer"
+                  className="w-full rounded-md px-3 py-2.5 text-[13px] focus:outline-none cursor-pointer input-glow"
+                  style={inputStyle}
                 >
                   {POPULAR_MODELS.map((m) => (
                     <option key={m.id} value={m.id}>
@@ -284,8 +359,11 @@ export default function Home() {
             </div>
 
             {/* System Prompt */}
-            <div className="mb-4">
-              <label className="mb-2 block text-sm font-medium text-zinc-300">
+            <div className="mb-5">
+              <label
+                className="mb-2 block text-[13px] font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
                 System Prompt
               </label>
               <textarea
@@ -293,28 +371,42 @@ export default function Home() {
                 onChange={(e) => setSystemPrompt(e.target.value)}
                 placeholder="You are a helpful assistant..."
                 rows={3}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 resize-y"
+                className="w-full rounded-md px-3 py-2.5 text-[13px] placeholder:opacity-30 focus:outline-none resize-y input-glow"
+                style={inputStyle}
               />
             </div>
 
             {/* Context */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-300">
+              <label
+                className="mb-2 block text-[13px] font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Context
               </label>
               <textarea
                 value={context}
                 onChange={(e) => setContext(e.target.value)}
-                placeholder="Paste any reference material, documentation, or context here..."
+                placeholder="Paste reference material, docs, or context..."
                 rows={4}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 resize-y"
+                className="w-full rounded-md px-3 py-2.5 text-[13px] placeholder:opacity-30 focus:outline-none resize-y input-glow"
+                style={inputStyle}
               />
             </div>
           </div>
 
-          {/* User Prompt */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <label className="mb-2 block text-sm font-semibold uppercase tracking-wider text-zinc-400">
+          {/* Prompt Card */}
+          <div
+            className="rounded-lg p-5"
+            style={{
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+            }}
+          >
+            <label
+              className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.15em]"
+              style={labelStyle}
+            >
               Prompt
             </label>
             <textarea
@@ -322,17 +414,25 @@ export default function Home() {
               onChange={(e) => setUserPrompt(e.target.value)}
               placeholder="Ask anything..."
               rows={5}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 resize-y"
+              className="w-full rounded-md px-3 py-2.5 text-[13px] placeholder:opacity-30 focus:outline-none resize-y input-glow"
+              style={inputStyle}
             />
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="mt-3 w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-all hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+              className="mt-3 w-full rounded-md px-4 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 btn-glow"
+              style={{
+                background: loading ? "var(--bg-elevated)" : "var(--accent)",
+                color: loading ? "var(--text-secondary)" : "var(--bg-deep)",
+                border: loading
+                  ? "1px solid var(--border-default)"
+                  : "1px solid var(--accent)",
+              }}
             >
               {loading ? (
                 <>
                   <svg
-                    className="h-4 w-4 animate-spin"
+                    className="h-3.5 w-3.5 animate-spin"
                     viewBox="0 0 24 24"
                     fill="none"
                   >
@@ -355,16 +455,16 @@ export default function Home() {
               ) : (
                 <>
                   <svg
-                    className="h-4 w-4"
+                    className="h-3.5 w-3.5"
                     fill="none"
                     viewBox="0 0 24 24"
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                     stroke="currentColor"
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
+                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
                     />
                   </svg>
                   Run
@@ -375,115 +475,213 @@ export default function Home() {
         </div>
 
         {/* Output Panel */}
-        <div className="flex flex-col">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 flex-1 flex flex-col">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400">
-              Output
-            </h2>
+        <div className="flex flex-col animate-fade-in-delay-2">
+          <div
+            className="rounded-lg p-5 flex-1 flex flex-col min-h-[500px]"
+            style={{
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+            }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2
+                className="text-[11px] font-semibold uppercase tracking-[0.15em]"
+                style={labelStyle}
+              >
+                Output
+              </h2>
+              {output && (
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-medium cursor-pointer transition-all"
+                  style={{
+                    background: copied ? "var(--teal-muted)" : "transparent",
+                    border: `1px solid ${copied ? "var(--teal-border)" : "var(--border-default)"}`,
+                    color: copied ? "var(--teal)" : "var(--text-secondary)",
+                  }}
+                >
+                  {copied ? (
+                    <>
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m4.5 12.75 6 6 9-13.5"
+                        />
+                      </svg>
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                        />
+                      </svg>
+                      Copy
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
 
             {error && (
-              <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              <div
+                className="mb-4 rounded-md px-4 py-3 text-[13px]"
+                style={{
+                  background: "var(--red-muted)",
+                  border: "1px solid var(--red-border)",
+                  color: "var(--red)",
+                }}
+              >
                 {error}
               </div>
             )}
 
             {loading && !output && (
               <div className="flex flex-1 items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-zinc-500">
-                  <svg
-                    className="h-8 w-8 animate-spin"
-                    viewBox="0 0 24 24"
-                    fill="none"
+                <div className="flex flex-col items-center gap-4">
+                  <div className="relative">
+                    <div
+                      className="h-10 w-10 rounded-full"
+                      style={{ border: "2px solid var(--border-subtle)" }}
+                    />
+                    <div
+                      className="absolute inset-0 h-10 w-10 rounded-full animate-spin"
+                      style={{
+                        border: "2px solid transparent",
+                        borderTopColor: "var(--accent)",
+                      }}
+                    />
+                  </div>
+                  <span
+                    className="text-[13px]"
+                    style={{ color: "var(--text-muted)" }}
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  <span className="text-sm">Waiting for response...</span>
+                    Waiting for response...
+                  </span>
                 </div>
               </div>
             )}
 
             {!loading && !output && !error && (
               <div className="flex flex-1 items-center justify-center">
-                <div className="text-center text-zinc-600">
-                  <svg
-                    className="mx-auto mb-3 h-12 w-12"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1}
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                    />
-                  </svg>
-                  <p className="text-sm">Output will appear here</p>
-                </div>
-              </div>
-            )}
-
-            {output && (
-              <div className="flex-1 overflow-auto">
-                <div className="prose prose-invert prose-sm max-w-none">
-                  <pre className="whitespace-pre-wrap rounded-lg bg-zinc-800/50 p-4 text-sm leading-relaxed text-zinc-200 font-mono border border-zinc-700/50">
-                    {output}
-                  </pre>
-                </div>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={() => navigator.clipboard.writeText(output)}
-                    className="flex items-center gap-1.5 rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200 cursor-pointer"
+                <div className="text-center">
+                  <div
+                    className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl"
+                    style={{
+                      background: "var(--bg-elevated)",
+                      border: "1px solid var(--border-subtle)",
+                    }}
                   >
                     <svg
-                      className="h-3.5 w-3.5"
+                      className="h-7 w-7"
+                      style={{ color: "var(--text-muted)" }}
                       fill="none"
                       viewBox="0 0 24 24"
-                      strokeWidth={1.5}
+                      strokeWidth={1}
                       stroke="currentColor"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                        d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                       />
                     </svg>
-                    Copy
-                  </button>
-                  {usage && (
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
-                        <span className="text-zinc-500">In</span>
-                        {usage.prompt_tokens.toLocaleString()}
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
-                        <span className="text-zinc-500">Out</span>
-                        {usage.completion_tokens.toLocaleString()}
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700/50 bg-zinc-800/50 px-2 py-1 text-xs text-zinc-400">
-                        <span className="text-zinc-500">Total</span>
-                        {usage.total_tokens.toLocaleString()} tokens
-                      </span>
-                      {usage.cost !== undefined && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400">
-                          ${usage.cost.toFixed(6)}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  </div>
+                  <p
+                    className="text-[13px]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Output will appear here
+                  </p>
                 </div>
+              </div>
+            )}
+
+            {output && (
+              <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 overflow-auto">
+                  <pre
+                    className="whitespace-pre-wrap rounded-md p-4 text-[13px] leading-relaxed font-mono"
+                    style={{
+                      background: "var(--bg-elevated)",
+                      border: "1px solid var(--border-subtle)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    {output}
+                  </pre>
+                </div>
+                {usage && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-[0.15em]"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Usage
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px]"
+                      style={{
+                        background: "var(--bg-elevated)",
+                        border: "1px solid var(--border-subtle)",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      <span style={{ color: "var(--text-muted)" }}>In</span>
+                      {usage.prompt_tokens.toLocaleString()}
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px]"
+                      style={{
+                        background: "var(--bg-elevated)",
+                        border: "1px solid var(--border-subtle)",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      <span style={{ color: "var(--text-muted)" }}>Out</span>
+                      {usage.completion_tokens.toLocaleString()}
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px]"
+                      style={{
+                        background: "var(--bg-elevated)",
+                        border: "1px solid var(--border-subtle)",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      <span style={{ color: "var(--text-muted)" }}>Total</span>
+                      {usage.total_tokens.toLocaleString()}
+                    </span>
+                    {usage.cost !== undefined && (
+                      <span
+                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium"
+                        style={{
+                          background: "var(--teal-muted)",
+                          border: "1px solid var(--teal-border)",
+                          color: "var(--teal)",
+                        }}
+                      >
+                        ${usage.cost.toFixed(6)}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
